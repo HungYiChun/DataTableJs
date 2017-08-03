@@ -1,0 +1,93 @@
+﻿@{
+    ViewBag.Title = "DataTables";
+}
+
+<div class="jumbotron">
+    <h1>Other Table Views</h1>
+    <p>@Html.ActionLink("Child Rows >", "ChildRows", "Home")</p>
+    <p>@Html.ActionLink("Form Inputs >", "FormInputs", "Home")</p>
+    <p>@Html.ActionLink("Custom Table >", "CustomTable", "Home")</p>
+    <p>@Html.ActionLink("EntityFramework Generated >", "Index", "Employees")</p>
+</div>
+
+<h2>Basic</h2>
+
+<hr />
+
+<table id="datatable" class="display" cellspacing="0">
+    <thead>
+        <tr>
+            <th>LastName</th>
+            <th>FirstName</th>
+            <th>Title</th>
+            <th>BirthDate</th>
+            <th>HireDate</th>
+            <th>Address</th>
+            <th>City</th>
+            <th>PostalCode</th>
+            <th>Country</th>
+            <th>HomePhone</th>
+            <th>Extension</th>
+        </tr>
+    </thead>
+    <tfoot>
+        <tr>
+            <th>LastName</th>
+            <th>FirstName</th>
+            <th>Title</th>
+            <th>BirthDate</th>
+            <th>HireDate</th>
+            <th>Address</th>
+            <th>City</th>
+            <th>PostalCode</th>
+            <th>Country</th>
+            <th>HomePhone</th>
+            <th>Extension</th>
+        </tr>
+    </tfoot>
+</table>
+
+@section scripts{
+    <script>
+        $(document).ready(function () {
+            $('#datatable').DataTable({
+                "ajax": {
+                    "url": "/Home/GetEmployees",
+                    "type": "GET",
+                    "dataType": "json"
+                },
+                "columns": [
+                    { "data": "LastName" },
+                    { "data": "FirstName" },
+                    { "data": "Title" },
+                    { "data": "BirthDate" },
+                    { "data": "HireDate" },
+                    { "data": "Address" },
+                    { "data": "City" },
+                    { "data": "PostalCode" },
+                    { "data": "Country" },
+                    { "data": "HomePhone" },
+                    { "data": "Extension" }
+                ],
+                "columnDefs": [
+                    {
+                        targets: 3,
+                        render: function (data, type, row) {
+                            var date = moment(data);
+                            date = date.format("YYYY/MM/DD");
+                            return date;
+                        },
+                    },
+                    {
+                        targets: 4,
+                        render: function (data, type, row) {
+                            var date = moment(data);
+                            date = date.format("YYYY/MM/DD");
+                            return date;
+                        },
+                    },
+                ]
+            });
+        });
+    </script>
+}

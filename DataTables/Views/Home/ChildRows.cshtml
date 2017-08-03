@@ -1,0 +1,137 @@
+﻿@{
+    ViewBag.Title = "ChildRows";
+}
+
+<style>
+    td.details-control {
+        background: url('../Content/DataTables/images/details_open.png') no-repeat center center;
+        cursor: pointer;
+    }
+
+    tr.shown td.details-control {
+        background: url('../Content/DataTables/images/details_close.png') no-repeat center center;
+    }
+</style>
+
+<h2>ChildRows</h2>
+
+<hr />
+
+<table id="datatable" class="display" cellspacing="0">
+    <thead>
+        <tr>
+            <th></th>
+            <th>LastName</th>
+            <th>FirstName</th>
+            <th>Title</th>
+            <th>BirthDate</th>
+            <th>HireDate</th>
+            <th>Address</th>
+            <th>City</th>
+            <th>PostalCode</th>
+            <th>Country</th>
+            <th>HomePhone</th>
+            <th>Extension</th>
+        </tr>
+    </thead>
+    <tfoot>
+        <tr>
+            <th></th>
+            <th>LastName</th>
+            <th>FirstName</th>
+            <th>Title</th>
+            <th>BirthDate</th>
+            <th>HireDate</th>
+            <th>Address</th>
+            <th>City</th>
+            <th>PostalCode</th>
+            <th>Country</th>
+            <th>HomePhone</th>
+            <th>Extension</th>
+        </tr>
+    </tfoot>
+</table>
+
+@section scripts{
+    <script>
+        function format(d) {
+            return '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">' +
+                '<tr>' +
+                    '<td>Region:</td>' +
+                    '<td>' + d.Region + '</td>' +
+                '</tr>' +
+                '<tr>' +
+                    '<td>Notes:</td>' +
+                    '<td>' + d.Notes + '</td>' +
+                '</tr>' +
+                '<tr>' +
+                    '<td>Photo:</td>' +
+                    '<td><img style="width:100px;height:100px" src="' + d.PhotoPath + '"/></td>' +
+                '</tr>' +
+            '</table>';
+        }
+
+        $(document).ready(function () {
+            var table = $('#datatable').DataTable({
+                "ajax": {
+                    "url": "/Home/GetEmployees",
+                    "type": "GET",
+                    "dataType": "json"
+                },
+                "columns": [
+                    {
+                        "className": 'details-control',
+                        "orderable": false,
+                        "data": null,
+                        "defaultContent": ''
+                    },
+                    { "data": "LastName" },
+                    { "data": "FirstName" },
+                    { "data": "Title" },
+                    { "data": "BirthDate" },
+                    { "data": "HireDate" },
+                    { "data": "Address" },
+                    { "data": "City" },
+                    { "data": "PostalCode" },
+                    { "data": "Country" },
+                    { "data": "HomePhone" },
+                    { "data": "Extension" }
+                ],
+                "columnDefs": [
+                    {
+                        targets: 4,
+                        render: function (data, type, row) {
+                            var date = moment(data);
+                            date = date.format("YYYY/MM/DD");
+                            return date;
+                        },
+                    },
+                    {
+                        targets: 5,
+                        render: function (data, type, row) {
+                            var date = moment(data);
+                            date = date.format("YYYY/MM/DD");
+                            return date;
+                        },
+                    },
+                ]
+            });
+
+            $('#datatable tbody').on('click', 'td.details-control', function () {
+                var tr = $(this).closest('tr');
+                var row = table.row(tr);
+
+                if (row.child.isShown()) {
+                    // This row is already open - close it
+                    row.child.hide();
+                    tr.removeClass('shown');
+                }
+                else {
+                    // Open this row
+                    row.child(format(row.data())).show();
+                    tr.addClass('shown');
+                }
+            });
+        });
+    </script>
+}

@@ -1,0 +1,106 @@
+﻿@model List<DataTables.Models.Employees>
+@{
+    ViewBag.Title = "FormInputs";
+}
+
+<h2>FormInputs</h2>
+
+<hr />
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+    <table id="datatable" class="display" cellspacing="0">
+        <thead>
+            <tr>
+                <th>LastName</th>
+                <th>FirstName</th>
+                <th>Title</th>
+                <th>Address</th>
+                <th>City</th>
+                <th>PostalCode</th>
+                <th>Country</th>
+            </tr>
+        </thead>
+        <tfoot>
+            <tr>
+                <th>LastName</th>
+                <th>FirstName</th>
+                <th>Title</th>
+                <th>Address</th>
+                <th>City</th>
+                <th>PostalCode</th>
+                <th>Country</th>
+            </tr>
+        </tfoot>
+    </table>
+    <br />
+    <input type="submit" value="Submit" class="btn btn-default btn-lg" />
+}
+
+@section scripts{
+    <script>
+        $(document).ready(function () {
+            $('#datatable').DataTable({
+                "ajax": {
+                    "url": "/Home/GetEmployees",
+                    "type": "GET",
+                    "dataType": "json"
+                },
+                "lengthMenu":[
+                    [-1]
+                ],
+                "searching": false,
+                "bLengthChange": false,
+                "bPaginate": false,
+                "columns": [
+                    { "data": "LastName" },
+                    { "data": "FirstName" },
+                    { "data": "Title" },
+                    { "data": "Address" },
+                    { "data": "City" },
+                    { "data": "PostalCode" },
+                    { "data": "Country" }
+                ],
+                "columnDefs": [
+                    {
+                        targets: 2,
+                        render: function (data, type, row, count) {
+                            var inputText = '<input type="hidden" name="[' + count.row + '].EmployeeId" value="' + row.EmployeeId + '"><input type="text" name="[' + count.row + '].Title" value="' + data + '">';
+                            return inputText;
+                        },
+                    },
+                    {
+                        targets: 3,
+                        render: function (data, type, row, count) {
+                            var inputText = '<input type="text" name="[' + count.row + '].Address" value="' + data + '">';
+                            return inputText;
+                        },
+                    },
+                    {
+                        targets: 4,
+                        render: function (data, type, row, count) {
+                            var inputText = '<input type="text" name="[' + count.row + '].City" value="' + data + '">';
+                            return inputText;
+                        },
+                    },
+                    {
+                        targets: 5,
+                        render: function (data, type, row, count) {
+                            var inputText = '<input type="text" name="[' + count.row + '].PostalCode" value="' + data + '">';
+                            return inputText;
+                        },
+                    },
+                    {
+                        targets: 6,
+                        render: function (data, type, row, count) {
+                            var inputText = '<input type="text" name="[' + count.row + '].Country" value="' + data + '">';
+                            return inputText;
+                        },
+                    }
+                ]
+            });
+        });
+    </script>
+}
